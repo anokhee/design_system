@@ -95,7 +95,7 @@ body {
   --Letter-Spacing-label-sm: 0.4px;
 
   /* ---------- Color palette ---------- */
-  --neutral-white: #ffffff;
+
   --neutral-very-light: #f3f4f7;
   --neutral-light: #dadee8;
   --neutral-medium: #7884a5;
@@ -103,14 +103,17 @@ body {
   --neutral-very-dark: #313749;
   --neutral-black: #101218;
 
-  --primary-lightest: #eef2ff;
-  --primary-very-light: #e0e7ff;
-  --primary-light: #c7d2fe;
-  --primary-medium: #6366f1;
-  --primary-dark: #4f46e5;
-  --primary-very-dark: #4338ca;
-  --primary-darkest: #312e81;
+  /* Primary */
+  --primary-lightest: #f5f5ff;
+  --primary-very-light: #dfe0f5;
+  --primary-super-light: #f3f4fc;
+  --primary-light: #878bd4;
+  --primary-medium: #4c51bf;
+  --primary-dark: #313587;
+  --primary-very-dark: #262969;
+  --primary-darkest: #16173c;
 
+  /* Green */
   --green-lightest: #effbf1;
   --green-very-light: #bfedc6;
   --green-light: #7fdc8d;
@@ -119,6 +122,7 @@ body {
   --green-very-dark: #1a6025;
   --green-darkest: #0d3012;
 
+  /* Yellow */
   --yellow-lightest: #fff9eb;
   --yellow-very-light: #ffedc2;
   --yellow-light: #ffd770;
@@ -127,6 +131,7 @@ body {
   --yellow-very-dark: #b88400;
   --yellow-darkest: #6b4d01;
 
+  /* Red */
   --red-lightest: #fdedf1;
   --red-very-light: #f7b6c7;
   --red-light: #ed5a81;
@@ -135,14 +140,15 @@ body {
   --red-very-dark: #6e0d28;
   --red-darkest: #370613;
 
+  /* Assorted */
   --dark-blue: #0f172a;
   --off-white: #f9fafb;
   --disabled-field: #f8fafc;
   --light-gray: #fafafa;
   --gray-tag: #dfe0e2;
 
-  /* ---------- Semantic (optional but useful) ---------- */
-  --color-bg: var(--neutral-white);
+  /* Optional semantic layer */
+  --color-bg: var(--neutral-white, #ffffff);
   --color-text: var(--neutral-black);
   --color-border: var(--neutral-light);
 
