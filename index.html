@@ -143,6 +143,114 @@
         padding: var(--space-5);
         height: 180px;
       }
+      /* =========================
+   TYPOGRAPHY PANEL (page-only)
+   ========================= */
+      .typo-sections {
+        display: grid;
+        gap: 12px;
+      }
+
+      .typo-details {
+        border: 1px solid var(--color-border);
+        border-radius: 14px;
+        background: #fff;
+        overflow: hidden;
+      }
+
+      .typo-summary {
+        cursor: pointer;
+        padding: 14px 14px;
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 12px;
+        list-style: none;
+      }
+
+      .typo-summary::-webkit-details-marker {
+        display: none;
+      }
+
+      .typo-summary-left {
+        display: flex;
+        align-items: baseline;
+        gap: 10px;
+      }
+
+      .typo-title {
+        font-weight: 700;
+      }
+
+      .typo-count {
+        color: var(--color-muted);
+      }
+
+      .typo-body {
+        padding: 0 14px 14px;
+      }
+
+      .typo-subgroup {
+        border-top: 1px solid var(--color-border);
+        padding-top: 12px;
+        margin-top: 12px;
+      }
+
+      .typo-row {
+        display: grid;
+        grid-template-columns: minmax(240px, 1fr) minmax(360px, 2fr);
+        gap: 18px;
+        padding: 12px 0;
+        border-top: 1px solid var(--color-border);
+      }
+
+      .typo-row:first-child {
+        border-top: none;
+      }
+
+      .typo-left h4 {
+        margin: 0;
+        font-weight: 700;
+        font-size: 14px;
+      }
+
+      .typo-left .typo-blurb {
+        margin-top: 6px;
+        color: var(--color-muted);
+        font-size: 12px;
+        line-height: 1.3rem;
+      }
+
+      .typo-right {
+        display: grid;
+        gap: 10px;
+      }
+
+      .typo-sample {
+        padding-bottom: 10px;
+        border-bottom: 1px dashed var(--color-border);
+      }
+
+      .typo-meta {
+        display: grid;
+        grid-template-columns: 160px 1fr;
+        gap: 6px 14px;
+        align-items: start;
+      }
+
+      .typo-k {
+        color: var(--color-muted);
+      }
+
+      /* Small screen: stack columns */
+      @media (max-width: 820px) {
+        .typo-row {
+          grid-template-columns: 1fr;
+        }
+        .typo-meta {
+          grid-template-columns: 140px 1fr;
+        }
+      }
     </style>
   </head>
   <body>
@@ -176,11 +284,10 @@
        TYPOGRAPHY
        ======================= -->
         <section id="typography">
-          <div style="font-weight: 700; margin-bottom: 8px">
-            Typography Scale
-          </div>
+          <div style="font-weight: 700; margin-bottom: 8px">Typography</div>
           <div class="label">
-            Each example shows the actual utility class and token values.
+            Grouped by type, with L/M/S variants. Expand a section to inspect
+            tokens.
           </div>
 
           <div id="typographyMount" style="margin-top: 18px"></div>
@@ -407,141 +514,199 @@
         { cls: "text-display-md-accent", label: "Accent Display MD" },
       ];
 
-      // ----- TYPOGRAPHY RENDER -----
+      const TYPO_SCALE = ["lg", "md", "sm"];
+
+      const TYPO_TYPES = {
+        display: {
+          title: "Display",
+          open: true,
+          blurb: {
+            lg: "Hero headlines, landing page top sections, big moments.",
+            md: "Section headers for major pages, feature callouts.",
+            sm: "Compact hero headers, cards with strong emphasis.",
+          },
+        },
+
+        headline: {
+          title: "Headline",
+          open: false,
+          blurb: {
+            lg: "Primary page headings and high-level content sections.",
+            md: "Secondary headers in pages, panels, and modals.",
+            sm: "Card titles, list section headers, dense UIs.",
+          },
+        },
+
+        title: {
+          title: "Title",
+          open: false,
+          blurb: {
+            lg: "Component titles, modal titles, content grouping.",
+            md: "Default component title for most surfaces.",
+            sm: "Compact titles for tight layouts and small cards.",
+          },
+        },
+
+        body: {
+          title: "Body",
+          open: false,
+          blurb: {
+            lg: "Long-form reading, marketing body copy.",
+            md: "Default body text for product UI.",
+            sm: "Dense UI, helper text, secondary content.",
+          },
+        },
+
+        label: {
+          title: "Label",
+          open: false,
+          blurb: {
+            lg: "Form labels, table headers, emphasized microcopy.",
+            md: "Default label size for controls and metadata.",
+            sm: "Tags, badges, captions, tiny metadata.",
+          },
+        },
+      };
+
       function renderTypography() {
         const host = document.getElementById("typographyMount");
         if (!host) return;
 
         host.innerHTML = "";
 
-        function fmtPx(v) {
-          // values usually come back like "16px" already; just guard empties
-          return v && v.trim().length ? v.trim() : "(missing)";
-        }
+        const SAMPLE =
+          "The quick brown fox jumps over the lazy dog — 1234567890";
 
-        function fmtFamily(v) {
-          return v && v.trim().length ? v.trim() : "(missing)";
-        }
+        const cssVar = (name) =>
+          getComputedStyle(document.documentElement)
+            .getPropertyValue(name)
+            .trim() || "(missing)";
 
-        function row(k, v) {
-          return el(
-            "div",
-            { class: "mono", style: "display:flex; gap:10px; padding: 2px 0;" },
-            [
-              el("div", { style: "width: 140px; color: var(--color-muted);" }, [
-                k,
-              ]),
-              el("div", {}, [v]),
-            ],
-          );
-        }
+        const nice = (v) => (v && v.trim().length ? v.trim() : "(missing)");
 
-        TYPOGRAPHY.forEach((t) => {
-          // Create a sample line to measure computed styles
-          const sampleId = `typo-${t.cls}`;
-          const sample = el(
-            "div",
-            {
-              id: sampleId,
-              class: t.cls,
-              style:
-                "padding: 10px 0; border-bottom: 1px dashed var(--color-border); margin-bottom: 10px;",
-            },
-            ["The quick brown fox jumps over the lazy dog — 1234567890"],
-          );
+        function tokenNamesForClass(cls) {
+          const key = cls.replace(/^text-/, "");
 
-          // Card wrapper
-          const card = el(
-            "div",
-            { class: "card", style: "margin-bottom: 18px;" },
-            [
-              el(
-                "div",
-                {
-                  style:
-                    "display:flex; justify-content: space-between; gap: 12px; align-items: baseline;",
-                },
-                [
-                  el("div", { style: "font-weight: 700;" }, [t.label]),
-                  el("div", { class: "mono" }, [`.${t.cls}`]),
-                ],
-              ),
-              el("div", { class: "hr", style: "margin: 10px 0;" }),
-              sample,
-              el(
-                "div",
-                {
-                  style: "display:grid; grid-template-columns: 1fr; gap: 2px;",
-                },
-                [
-                  // Filled after we compute styles
-                ],
-              ),
-            ],
-          );
-
-          host.appendChild(card);
-
-          // Compute styles AFTER it’s in DOM
-          const computed = getComputedStyle(document.getElementById(sampleId));
-          const fontFamily = fmtFamily(computed.fontFamily);
-          const fontSize = fmtPx(computed.fontSize);
-          const lineHeight = fmtPx(computed.lineHeight);
-          const letterSpacing = fmtPx(computed.letterSpacing);
-          const fontWeight =
-            computed.fontWeight && computed.fontWeight.trim().length ?
-              computed.fontWeight.trim()
-            : "(missing)";
-
-          // Try to show your token vars as well (best-effort)
-          // Example: "text-display-lg" -> "display-lg"
-          const key = t.cls.replace(/^text-/, "");
-          const tokenFamily =
-            t.cls === "text-display-md-accent" ?
+          const family =
+            cls === "text-display-md-accent" ?
               "--Font-Family-Accent"
             : "--Font-Family-Primary";
 
-          const tokenFontSize = `--Font-Size-${key}`;
-          const tokenLineHeight = `--Line-Height-${key}`;
-          const tokenLetterSpacing = `--Letter-Spacing-${key}`;
+          return {
+            family,
+            size: `--Font-Size-${key}`,
+            lineHeight: `--Line-Height-${key}`,
+            letterSpacing: `--Letter-Spacing-${key}`,
+          };
+        }
 
-          const metaBlock = card.lastChild; // the empty grid we created
-          metaBlock.appendChild(row("font-family", fontFamily));
-          metaBlock.appendChild(row("font-size", fontSize));
-          metaBlock.appendChild(row("line-height", lineHeight));
-          metaBlock.appendChild(row("letter-spacing", letterSpacing));
-          metaBlock.appendChild(row("font-weight", fontWeight));
+        function metaRow(k, v) {
+          return [
+            el("div", { class: "mono typo-k" }, [k]),
+            el("div", { class: "mono" }, [v]),
+          ];
+        }
 
-          metaBlock.appendChild(
-            el("div", { class: "hr", style: "margin: 10px 0;" }),
+        const container = el("div", { class: "typo-sections" }, []);
+        host.appendChild(container);
+
+        Object.entries(TYPO_TYPES).forEach(([typeKey, typeConfig]) => {
+          const details = el(
+            "details",
+            {
+              class: "typo-details",
+              ...(typeConfig.open ? { open: "" } : {}),
+            },
+            [],
           );
 
-          // Token readout (also computed via CSS var lookup)
-          const cssVars = (name) =>
-            getComputedStyle(document.documentElement)
-              .getPropertyValue(name)
-              .trim() || "(missing)";
-
-          metaBlock.appendChild(
-            row("token family", `${tokenFamily} → ${cssVars(tokenFamily)}`),
-          );
-
-          // Only show size/line/spacing tokens if they exist for this key
-          metaBlock.appendChild(
-            row("token size", `${tokenFontSize} → ${cssVars(tokenFontSize)}`),
-          );
-          metaBlock.appendChild(
-            row(
-              "token line-height",
-              `${tokenLineHeight} → ${cssVars(tokenLineHeight)}`,
+          const summary = el("summary", { class: "typo-summary" }, [
+            el("div", { class: "typo-summary-left" }, [
+              el("div", { class: "typo-title" }, [typeConfig.title]),
+              el("div", { class: "label mono typo-count" }, [
+                `${TYPO_SCALE.length} styles`,
+              ]),
+            ]),
+            el(
+              "div",
+              { class: "label mono", style: "color: var(--color-muted);" },
+              ["Click to expand"],
             ),
-          );
-          metaBlock.appendChild(
-            row(
-              "token letter-spacing",
-              `${tokenLetterSpacing} → ${cssVars(tokenLetterSpacing)}`,
-            ),
-          );
+          ]);
+
+          const body = el("div", { class: "typo-body" }, []);
+
+          TYPO_SCALE.forEach((size) => {
+            const cls = `text-${typeKey}-${size}`;
+
+            const left = el("div", { class: "typo-left" }, [
+              el("h4", {}, [size.toUpperCase()]),
+              el("div", { class: "typo-blurb" }, [
+                typeConfig.blurb[size] || "",
+              ]),
+            ]);
+
+            const sample = el("div", { class: `${cls} typo-sample` }, [SAMPLE]);
+
+            const meta = el("div", { class: "typo-meta" }, []);
+
+            const right = el("div", { class: "typo-right" }, [
+              el(
+                "div",
+                {
+                  class: "mono",
+                  style:
+                    "display:flex; justify-content:space-between; gap:12px;",
+                },
+                [
+                  el("div", {}, [`.${cls}`]),
+                  el("div", { style: "color: var(--color-muted);" }, [
+                    "Tokens",
+                  ]),
+                ],
+              ),
+              sample,
+              meta,
+            ]);
+
+            const row = el("div", { class: "typo-row" }, [left, right]);
+            body.appendChild(row);
+
+            // Compute styles
+            const c = getComputedStyle(sample);
+            const tnames = tokenNamesForClass(cls);
+
+            const rows = [
+              ...metaRow("font-family", nice(c.fontFamily)),
+              ...metaRow("font-size", nice(c.fontSize)),
+              ...metaRow("line-height", nice(c.lineHeight)),
+              ...metaRow("letter-spacing", nice(c.letterSpacing)),
+              ...metaRow("font-weight", nice(c.fontWeight)),
+              ...metaRow("—", "—"),
+              ...metaRow(
+                "token family",
+                `${tnames.family} → ${cssVar(tnames.family)}`,
+              ),
+              ...metaRow(
+                "token size",
+                `${tnames.size} → ${cssVar(tnames.size)}`,
+              ),
+              ...metaRow(
+                "token line-height",
+                `${tnames.lineHeight} → ${cssVar(tnames.lineHeight)}`,
+              ),
+              ...metaRow(
+                "token letter-spacing",
+                `${tnames.letterSpacing} → ${cssVar(tnames.letterSpacing)}`,
+              ),
+            ];
+
+            rows.forEach((node) => meta.appendChild(node));
+          });
+
+          details.appendChild(summary);
+          details.appendChild(body);
+          container.appendChild(details);
         });
       }
 
@@ -668,8 +833,8 @@
 
       async function fetchLastUpdated() {
         const owner = "anokhee";
-        const repo = "design_sandbox";
-        const branch = "main"; // or whatever you use
+        const repo = "design_system";
+        const branch = "main";
 
         try {
           const res = await fetch(
@@ -677,16 +842,23 @@
           );
           const data = await res.json();
 
-          const date = new Date(data.commit.committer.date);
+          const commitDate = new Date(data.commit.committer.date);
 
-          const formatted = date.toLocaleDateString("en-US", {
+          const formattedDate = commitDate.toLocaleDateString("en-US", {
             weekday: "long",
             year: "numeric",
             month: "long",
             day: "numeric",
           });
 
-          document.getElementById("lastUpdated").textContent = formatted;
+          const formattedTime = commitDate.toLocaleTimeString("en-US", {
+            hour: "numeric",
+            minute: "2-digit",
+            hour12: true,
+          });
+
+          document.getElementById("lastUpdated").textContent =
+            `${formattedDate} at ${formattedTime} by ${owner}`;
         } catch (err) {
           document.getElementById("lastUpdated").textContent = "Unavailable";
         }
