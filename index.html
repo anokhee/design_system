@@ -263,7 +263,6 @@
         <button class="nav-btn" data-tab="radius">Radius</button>
         <button class="nav-btn" data-tab="shadows">Shadows</button>
         <div class="hr"></div>
-        <div class="nav-title">Last Updated</div>
         <div class="label mono" id="lastUpdated">Loading…</div>
       </nav>
       <main>
@@ -315,7 +314,7 @@
               Border Radius
             </div>
             <div class="label">
-              Blue tiles show each <span class="mono">.rounded-*</span> value.
+              The tiles show each <span class="mono">.rounded-*</span> value.
             </div>
             <div
               id="radiusGrid"
@@ -716,6 +715,7 @@
           title: "Neutrals",
           vars: [
             "--neutral-white",
+            "--neutral-extra-light",
             "--neutral-very-light",
             "--neutral-light",
             "--neutral-medium",
@@ -728,8 +728,8 @@
           title: "Primary",
           vars: [
             "--primary-lightest",
+            "--primary-extra-light",
             "--primary-very-light",
-            "--primary-super-light",
             "--primary-light",
             "--primary-medium",
             "--primary-dark",
@@ -843,11 +843,17 @@
           const data = await res.json();
 
           const commitDate = new Date(data.commit.committer.date);
+          const author = data.commit.author.name;
+          const commitUrl = data.html_url;
+
+          const rawMessage = data.commit.message.split("\n")[0];
+
+          const truncated =
+            rawMessage.length > 80 ? rawMessage.slice(0, 80) + "…" : rawMessage;
 
           const formattedDate = commitDate.toLocaleDateString("en-US", {
-            weekday: "long",
             year: "numeric",
-            month: "long",
+            month: "short",
             day: "numeric",
           });
 
@@ -857,8 +863,21 @@
             hour12: true,
           });
 
-          document.getElementById("lastUpdated").textContent =
-            `${formattedDate} at ${formattedTime} by ${owner}`;
+          const el = document.getElementById("lastUpdated");
+
+          el.innerHTML = `
+      <div style="font-weight: 600;">
+        Last Updated ${formattedDate} at ${formattedTime}
+      </div>
+      <div style="margin-top:4px;">
+        <a href="${commitUrl}" target="_blank" style="text-decoration-color: var(--neutral-medium); text-decoration-style:dotted; color:var(--neutral-dark);">
+          ${truncated}
+        </a>
+      </div>
+      <div class="label" style="margin-top:4px;">
+        -- ${author}
+      </div>
+    `;
         } catch (err) {
           document.getElementById("lastUpdated").textContent = "Unavailable";
         }

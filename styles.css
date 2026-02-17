@@ -96,22 +96,24 @@ body {
 
   /* ---------- Color palette ---------- */
 
-  --neutral-very-light: #f3f4f7;
-  --neutral-light: #dadee8;
-  --neutral-medium: #7884a5;
+  --neutral-white: #ffffff;
+  --neutral-extra-light: #f9fafb;
+  --neutral-very-light: #f1f3f5;
+  --neutral-light: #d9dce3;
+  --neutral-medium: #838ba1;
   --neutral-dark: #525c7a;
   --neutral-very-dark: #313749;
   --neutral-black: #101218;
 
   /* Primary */
-  --primary-lightest: #f5f5ff;
-  --primary-very-light: #dfe0f5;
-  --primary-super-light: #f3f4fc;
-  --primary-light: #878bd4;
-  --primary-medium: #4c51bf;
-  --primary-dark: #313587;
-  --primary-very-dark: #262969;
-  --primary-darkest: #16173c;
+  --primary-lightest: #f7f8fe;
+  --primary-extra-light: #e8ebfc;
+  --primary-very-light: #d8def9;
+  --primary-light: #94a8f0;
+  --primary-medium: #3b5fe3;
+  --primary-dark: #1735a1;
+  --primary-very-dark: #0f236b;
+  --primary-darkest: #050c24;
 
   /* Green */
   --green-lightest: #effbf1;
