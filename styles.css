@@ -1,0 +1,413 @@
+/* =========================
+   1. RESET
+   ========================= */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--Font-Family-Primary);
+  background: var(--color-bg, #fff);
+  color: var(--color-text, #000);
+}
+
+/* =========================================================
+   2. TOKENS
+   ========================================================= */
+
+:root {
+  /* ---------- Font families ---------- */
+  --Font-Family-Primary:
+    "Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --Font-Family-Accent: "PT Serif", ui-serif, Georgia, serif;
+
+  /* ---------- Display ---------- */
+  --Font-Size-display-lg: 57px;
+  --Line-Height-display-lg: 64px;
+  --Letter-Spacing-display-lg: -0.25px;
+
+  --Font-Size-display-md: 45px;
+  --Line-Height-display-md: 52px;
+  --Letter-Spacing-display-md: 0px;
+
+  --Font-Size-display-sm: 36px;
+  --Line-Height-display-sm: 45px;
+  --Letter-Spacing-display-sm: 0px;
+
+  /* ---------- Headline ---------- */
+  --Font-Size-headline-lg: 32px;
+  --Line-Height-headline-lg: 40px;
+  --Letter-Spacing-headline-lg: 0px;
+
+  --Font-Size-headline-md: 28px;
+  --Line-Height-headline-md: 36px;
+  --Letter-Spacing-headline-md: 0px;
+
+  --Font-Size-headline-sm: 24px;
+  --Line-Height-headline-sm: 32px;
+  --Letter-Spacing-headline-sm: 0px;
+
+  /* ---------- Title ---------- */
+  --Font-Size-title-lg: 20px;
+  --Line-Height-title-lg: 28px;
+  --Letter-Spacing-title-lg: 0px;
+
+  --Font-Size-title-md: 16px;
+  --Line-Height-title-md: 24px;
+  --Letter-Spacing-title-md: 0.15px;
+
+  --Font-Size-title-sm: 14px;
+  --Line-Height-title-sm: 20px;
+  --Letter-Spacing-title-sm: 0.1px;
+
+  /* ---------- Body ---------- */
+  --Font-Size-body-lg: 20px;
+  --Line-Height-body-lg: 24px;
+  --Letter-Spacing-body-lg: 0.5px;
+
+  --Font-Size-body-md: 16px;
+  --Line-Height-body-md: 22px;
+  --Letter-Spacing-body-md: 0.25px;
+
+  --Font-Size-body-sm: 14px;
+  --Line-Height-body-sm: 16px;
+  --Letter-Spacing-body-sm: 0.4px;
+
+  /* ---------- Label ---------- */
+  --Font-Size-label-lg: 16px;
+  --Line-Height-label-lg: 20px;
+  --Letter-Spacing-label-lg: 0.1px;
+
+  --Font-Size-label-md: 14px;
+  --Line-Height-label-md: 16px; /* ✅ added */
+  --Letter-Spacing-label-md: 0.4px; /* ✅ added */
+
+  --Font-Size-label-sm: 12px;
+  --Line-Height-label-sm: 16px;
+  --Letter-Spacing-label-sm: 0.4px;
+
+  /* ---------- Color palette ---------- */
+  --neutral-white: #ffffff;
+  --neutral-very-light: #f3f4f7;
+  --neutral-light: #dadee8;
+  --neutral-medium: #7884a5;
+  --neutral-dark: #525c7a;
+  --neutral-very-dark: #313749;
+  --neutral-black: #101218;
+
+  --primary-lightest: #eef2ff;
+  --primary-very-light: #e0e7ff;
+  --primary-light: #c7d2fe;
+  --primary-medium: #6366f1;
+  --primary-dark: #4f46e5;
+  --primary-very-dark: #4338ca;
+  --primary-darkest: #312e81;
+
+  --green-lightest: #effbf1;
+  --green-very-light: #bfedc6;
+  --green-light: #7fdc8d;
+  --green-medium: #3fca54;
+  --green-dark: #2ca03d;
+  --green-very-dark: #1a6025;
+  --green-darkest: #0d3012;
+
+  --yellow-lightest: #fff9eb;
+  --yellow-very-light: #ffedc2;
+  --yellow-light: #ffd770;
+  --yellow-medium: #ffc533;
+  --yellow-dark: #e0a100;
+  --yellow-very-dark: #b88400;
+  --yellow-darkest: #6b4d01;
+
+  --red-lightest: #fdedf1;
+  --red-very-light: #f7b6c7;
+  --red-light: #ed5a81;
+  --red-medium: #e5245b;
+  --red-dark: #a4133c;
+  --red-very-dark: #6e0d28;
+  --red-darkest: #370613;
+
+  --dark-blue: #0f172a;
+  --off-white: #f9fafb;
+  --disabled-field: #f8fafc;
+  --light-gray: #fafafa;
+  --gray-tag: #dfe0e2;
+
+  /* ---------- Semantic (optional but useful) ---------- */
+  --color-bg: var(--neutral-white);
+  --color-text: var(--neutral-black);
+  --color-border: var(--neutral-light);
+
+  /* ---------- Spacing scale ---------- */
+  --space-0: 0rem;
+
+  --space-0_5: 0.125rem;
+  --space-1: 0.25rem;
+  --space-1_5: 0.375rem;
+  --space-2: 0.5rem;
+  --space-2_5: 0.625rem;
+  --space-3: 0.75rem;
+  --space-3_5: 0.875rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-7: 1.75rem;
+  --space-8: 2rem;
+  --space-9: 2.25rem;
+  --space-10: 2.5rem;
+  --space-11: 2.75rem;
+  --space-12: 3rem;
+
+  --space-14: 3.5rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  --space-28: 7rem;
+  --space-32: 8rem;
+  --space-36: 9rem;
+  --space-40: 10rem;
+  --space-44: 11rem;
+  --space-48: 12rem;
+  --space-52: 13rem;
+  --space-56: 14rem;
+  --space-60: 15rem;
+  --space-64: 16rem;
+  --space-72: 18rem;
+  --space-80: 20rem;
+  --space-96: 24rem;
+
+  /* ---------- Radius ---------- */
+  --radius-none: 0;
+  --radius-sm: 2px;
+  --radius: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
+  --radius-full: 9999px; /* more typical than 100% */
+
+  /* ---------- Shadows ---------- */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+  --shadow-md:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --shadow-lg:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --shadow-xl:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+/* =========================================================
+   3. TYPOGRAPHY UTILITIES
+   ========================================================= */
+
+.text-display-lg {
+  font-family: var(--Font-Family-Primary, system-ui, sans-serif);
+  font-size: var(--Font-Size-display-lg);
+  line-height: var(--Line-Height-display-lg);
+  letter-spacing: var(--Letter-Spacing-display-lg);
+}
+
+.text-display-md {
+  font-family: var(--Font-Family-Primary, system-ui, sans-serif);
+  font-size: var(--Font-Size-display-md);
+  line-height: var(--Line-Height-display-md);
+  letter-spacing: var(--Letter-Spacing-display-md);
+}
+
+.text-display-sm {
+  font-family: var(--Font-Family-Primary, system-ui, sans-serif);
+  font-size: var(--Font-Size-display-sm);
+  line-height: var(--Line-Height-display-sm);
+  letter-spacing: var(--Letter-Spacing-display-sm);
+}
+
+.text-headline-lg {
+  font-family: var(--Font-Family-Primary, system-ui, sans-serif);
+  font-size: var(--Font-Size-headline-lg);
+  line-height: var(--Line-Height-headline-lg);
+  letter-spacing: var(--Letter-Spacing-headline-lg);
+}
+
+.text-headline-md {
+  font-family: var(--Font-Family-Primary, system-ui, sans-serif);
+  font-size: var(--Font-Size-headline-md);
+  line-height: var(--Line-Height-headline-md);
+  letter-spacing: var(--Letter-Spacing-headline-md);
+}
+
+.text-headline-sm {
+  font-family: var(--Font-Family-Primary, system-ui, sans-serif);
+  font-size: var(--Font-Size-headline-sm);
+  line-height: var(--Line-Height-headline-sm);
+  letter-spacing: var(--Letter-Spacing-headline-sm);
+}
+
+.text-title-lg {
+  font-family: var(--Font-Family-Primary, system-ui, sans-serif);
+  font-size: var(--Font-Size-title-lg);
+  line-height: var(--Line-Height-title-lg);
+  letter-spacing: var(--Letter-Spacing-title-lg);
+}
+
+.text-title-md {
+  font-family: var(--Font-Family-Primary, system-ui, sans-serif);
+  font-size: var(--Font-Size-title-md);
+  line-height: var(--Line-Height-title-md);
+  letter-spacing: var(--Letter-Spacing-title-md);
+}
+
+.text-title-sm {
+  font-family: var(--Font-Family-Primary, system-ui, sans-serif);
+  font-size: var(--Font-Size-title-sm);
+  line-height: var(--Line-Height-title-sm);
+  letter-spacing: var(--Letter-Spacing-title-sm);
+}
+
+.text-body-lg {
+  font-family: var(--Font-Family-Primary, system-ui, sans-serif);
+  font-size: var(--Font-Size-body-lg);
+  line-height: var(--Line-Height-body-lg);
+  letter-spacing: var(--Letter-Spacing-body-lg);
+}
+
+.text-body-md {
+  font-family: var(--Font-Family-Primary, system-ui, sans-serif);
+  font-size: var(--Font-Size-body-md);
+  line-height: var(--Line-Height-body-md);
+  letter-spacing: var(--Letter-Spacing-body-md);
+}
+
+.text-body-sm {
+  font-family: var(--Font-Family-Primary, system-ui, sans-serif);
+  font-size: var(--Font-Size-body-sm);
+  line-height: var(--Line-Height-body-sm);
+  letter-spacing: var(--Letter-Spacing-body-sm);
+}
+
+.text-label-lg {
+  font-family: var(--Font-Family-Primary, system-ui, sans-serif);
+  font-size: var(--Font-Size-label-lg);
+  line-height: var(--Line-Height-label-lg);
+  letter-spacing: var(--Letter-Spacing-label-lg);
+}
+
+.text-label-md {
+  font-family: var(--Font-Family-Primary, system-ui, sans-serif);
+  font-size: var(--Font-Size-label-md);
+  line-height: var(--Line-Height-label-md);
+  letter-spacing: var(--Letter-Spacing-label-md);
+}
+
+.text-label-sm {
+  font-family: var(--Font-Family-Primary, system-ui, sans-serif);
+  font-size: var(--Font-Size-label-sm);
+  line-height: var(--Line-Height-label-sm);
+  letter-spacing: var(--Letter-Spacing-label-sm);
+}
+
+.text-display-md-accent {
+  font-family: var(--Font-Family-Accent, serif);
+  font-size: var(--Font-Size-display-md);
+  line-height: var(--Line-Height-display-md);
+  letter-spacing: var(--Letter-Spacing-display-md);
+}
+
+/* =========================================================
+   4. RADIUS UTILITIES
+   ========================================================= */
+
+.rounded-none {
+  border-radius: var(--radius-none);
+}
+.rounded-sm {
+  border-radius: var(--radius-sm);
+}
+.rounded {
+  border-radius: var(--radius);
+}
+.rounded-md {
+  border-radius: var(--radius-md);
+}
+.rounded-lg {
+  border-radius: var(--radius-lg);
+}
+.rounded-xl {
+  border-radius: var(--radius-xl);
+}
+.rounded-2xl {
+  border-radius: var(--radius-2xl);
+}
+.rounded-full {
+  border-radius: var(--radius-full);
+}
+
+/* =========================================================
+   5. SHADOW UTILITIES
+   ========================================================= */
+
+.shadow-sm {
+  box-shadow: var(--shadow-sm);
+}
+.shadow {
+  box-shadow: var(--shadow);
+}
+.shadow-md {
+  box-shadow: var(--shadow-md);
+}
+.shadow-lg {
+  box-shadow: var(--shadow-lg);
+}
+.shadow-xl {
+  box-shadow: var(--shadow-xl);
+}
+.shadow-2xl {
+  box-shadow: var(--shadow-2xl);
+}
+
+/* =========================================================
+   6. BASIC LAYOUT UTILITIES
+   ========================================================= */
+
+.flex {
+  display: flex;
+}
+.grid {
+  display: grid;
+}
+.block {
+  display: block;
+}
+.inline {
+  display: inline;
+}
+
+.items-center {
+  align-items: center;
+}
+.justify-between {
+  justify-content: space-between;
+}
+.justify-center {
+  justify-content: center;
+}
+
+.w-full {
+  width: 100%;
+}
+.h-full {
+  height: 100%;
+}
+
+.border {
+  border: 1px solid var(--color-border, #ddd);
+}

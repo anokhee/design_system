@@ -1,0 +1,707 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Utility Class Visualizer</title>
+    <!-- Use your existing styles.css (the utilities you pasted) -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=PT+Serif:wght@400;700&family=Source+Sans+3:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      /* Tiny page-only helpers (NOT your design system) */
+      :root {
+        --font-family: "Source Sans 3", system-ui, sans-serif;
+        --color-bg: #ffffff;
+        --color-text: #111827;
+        --color-border: #e5e7eb;
+        --color-muted: #6b7280;
+        --color-surface: #f9fafb;
+      }
+      body {
+        height: auto;
+        min-height: 100vh;
+        font-family: var(--font-family);
+        background: var(--color-bg);
+        color: var(--color-text);
+      }
+      .app {
+        display: flex;
+        min-height: 100vh;
+      }
+      nav {
+        width: 240px;
+        padding: 16px;
+        border-right: 1px solid var(--color-border);
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        background: var(--color-bg);
+      }
+      main {
+        flex: 1;
+        min-width: 0;
+      }
+      header {
+        position: sticky;
+        top: 0;
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(8px);
+        border-bottom: 1px solid var(--color-border);
+        padding: 14px 18px;
+        z-index: 10;
+      }
+      section {
+        padding: 18px;
+        display: none;
+      }
+      section.active {
+        display: block;
+      }
+      .nav-title {
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--color-muted);
+        margin: 14px 0 8px;
+      }
+      .nav-btn {
+        width: 100%;
+        text-align: left;
+        padding: 10px 10px;
+        border-radius: 10px;
+        border: 1px solid transparent;
+        background: transparent;
+        cursor: pointer;
+        color: var(--color-text);
+      }
+      .nav-btn:hover {
+        background: var(--color-surface);
+      }
+      .nav-btn.active {
+        border-color: var(--color-border);
+        background: var(--color-surface);
+      }
+      .card {
+        border: 1px solid var(--color-border);
+        border-radius: 14px;
+        background: #fff;
+        padding: 14px;
+      }
+      .label {
+        font-size: 12px;
+        color: var(--color-muted);
+      }
+      .mono {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 12px;
+        line-height: 1.2rem;
+      }
+      .hr {
+        height: 1px;
+        background: var(--color-border);
+        margin: 14px 0;
+      }
+      .grid-demo {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: var(--space-5);
+      }
+      /* spacing visualizer */
+      .space-row {
+        display: grid;
+        grid-template-columns: 72px 1fr 84px;
+        gap: 12px;
+        align-items: center;
+        padding: 10px 0;
+        border-top: 1px solid var(--color-border);
+      }
+      .space-row:first-child {
+        border-top: none;
+      }
+      .space-track {
+        height: 16px;
+        border-radius: var(--radius);
+        background: var(--neutral-very-light);
+        position: relative;
+        overflow: hidden;
+      }
+      .space-bar {
+        height: 100%;
+        border-radius: var(--radius) 0px 0px var(--radius);
+        background: blue;
+      }
+      .space-px {
+        color: var(--neutral-medium);
+      }
+      .shadow-swatch {
+        background-color: var(--neutral-lightest);
+        border-radius: var(--radius-xl);
+        border: 1px solid var(--color-border);
+        padding: var(--space-5);
+        height: 180px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <nav>
+        <div class="nav-title">Utilities</div>
+        <button class="nav-btn active" data-tab="colors">Colors</button>
+        <button class="nav-btn" data-tab="typography">Typography</button>
+        <button class="nav-btn" data-tab="spacing">Spacing</button>
+        <button class="nav-btn" data-tab="radius">Radius</button>
+        <button class="nav-btn" data-tab="shadows">Shadows</button>
+        <div class="hr"></div>
+        <div class="nav-title">Last Updated</div>
+        <div class="label mono" id="lastUpdated">Loading…</div>
+      </nav>
+      <main>
+        <header class="flex items-center justify-between">
+          <div>
+            <div style="font-weight: 700">Design System Sandbox</div>
+          </div>
+        </header>
+        <!-- =======================
+               COLORS
+               ======================= -->
+        <section id="colors" class="active">
+          <div style="font-weight: 700">Color Swatches</div>
+          <div id="colorSwatchMount"></div>
+        </section>
+
+        <!-- =======================
+       TYPOGRAPHY
+       ======================= -->
+        <section id="typography">
+          <div style="font-weight: 700; margin-bottom: 8px">
+            Typography Scale
+          </div>
+          <div class="label">
+            Each example shows the actual utility class and token values.
+          </div>
+
+          <div id="typographyMount" style="margin-top: 18px"></div>
+        </section>
+
+        <!-- =======================
+               SPACING
+               ======================= -->
+        <section id="spacing">
+          <div style="font-weight: 700; margin-bottom: 8px">Spacing Scale</div>
+          <div class="label">
+            Each bar’s width is the actual token value (e.g.
+            <span class="mono">var(--space-6)</span>).
+          </div>
+          <div style="margin-top: 14px">
+            <div style="margin-top: 14px" id="spacingList"></div>
+          </div>
+        </section>
+        <!-- =======================
+               RADIUS
+               ======================= -->
+        <section id="radius">
+          <div>
+            <div style="font-weight: 700; margin-bottom: 8px">
+              Border Radius
+            </div>
+            <div class="label">
+              Blue tiles show each <span class="mono">.rounded-*</span> value.
+            </div>
+            <div
+              id="radiusGrid"
+              style="
+                margin-top: 14px;
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+                gap: 12px;
+              "
+            ></div>
+          </div>
+        </section>
+        <!-- =======================
+               SHADOWS
+               ======================= -->
+        <section id="shadows">
+          <div style="font-weight: 700; margin-bottom: 8px">Shadows</div>
+          <div class="label">
+            Each tile uses <span class="mono">.shadow*</span>
+          </div>
+          <div id="shadowGrid" style="margin-top: 12px" class="grid-demo"></div>
+        </section>
+      </main>
+    </div>
+    <script>
+      // Tabs
+      const buttons = document.querySelectorAll("[data-tab]");
+      const sections = document.querySelectorAll("section");
+
+      function showTab(id) {
+        sections.forEach((s) => s.classList.toggle("active", s.id === id));
+        buttons.forEach((b) =>
+          b.classList.toggle("active", b.dataset.tab === id),
+        );
+      }
+
+      buttons.forEach((btn) => {
+        btn.addEventListener("click", () => showTab(btn.dataset.tab));
+      });
+
+      // ---------- Token data (single source of truth) ----------
+      const SPACING = [
+        { key: "0", var: "--space-0", px: "0" },
+        { key: "0.5", var: "--space-0_5", px: "2px" },
+        { key: "1", var: "--space-1", px: "4px" },
+        { key: "1.5", var: "--space-1_5", px: "6px" },
+        { key: "2", var: "--space-2", px: "8px" },
+        { key: "2.5", var: "--space-2_5", px: "10px" },
+        { key: "3", var: "--space-3", px: "12px" },
+        { key: "3.5", var: "--space-3_5", px: "14px" },
+        { key: "4", var: "--space-4", px: "16px" },
+        { key: "5", var: "--space-5", px: "20px" },
+        { key: "6", var: "--space-6", px: "24px" },
+        { key: "7", var: "--space-7", px: "28px" },
+        { key: "8", var: "--space-8", px: "32px" },
+        { key: "9", var: "--space-9", px: "36px" },
+        { key: "10", var: "--space-10", px: "40px" },
+        { key: "11", var: "--space-11", px: "44px" },
+        { key: "12", var: "--space-12", px: "48px" },
+        { key: "14", var: "--space-14", px: "56px" },
+        { key: "16", var: "--space-16", px: "64px" },
+        { key: "20", var: "--space-20", px: "80px" },
+        { key: "24", var: "--space-24", px: "96px" },
+        { key: "28", var: "--space-28", px: "112px" },
+        { key: "32", var: "--space-32", px: "128px" },
+        { key: "36", var: "--space-36", px: "144px" },
+        { key: "40", var: "--space-40", px: "160px" },
+        { key: "44", var: "--space-44", px: "176px" },
+        { key: "48", var: "--space-48", px: "192px" },
+        { key: "52", var: "--space-52", px: "208px" },
+        { key: "56", var: "--space-56", px: "224px" },
+        { key: "60", var: "--space-60", px: "240px" },
+        { key: "64", var: "--space-64", px: "256px" },
+        { key: "72", var: "--space-72", px: "288px" },
+        { key: "80", var: "--space-80", px: "320px" },
+        { key: "96", var: "--space-96", px: "384px" },
+      ];
+
+      const RADIUS = [
+        { cls: "rounded-none", px: "0px" },
+        { cls: "rounded-sm", px: "2px" },
+        { cls: "rounded", px: "4px" },
+        { cls: "rounded-md", px: "6px" },
+        { cls: "rounded-lg", px: "8px" },
+        { cls: "rounded-xl", px: "12px" },
+        { cls: "rounded-2xl", px: "16px" },
+        { cls: "rounded-full", px: "9999px" },
+      ];
+
+      const SHADOWS = [
+        { cls: "shadow-sm", label: "subtle" },
+        { cls: "shadow", label: "default" },
+        { cls: "shadow-md", label: "medium" },
+        { cls: "shadow-lg", label: "large" },
+        { cls: "shadow-xl", label: "xl" },
+        { cls: "shadow-2xl", label: "2xl" },
+      ];
+
+      // ---------- Render helpers ----------
+      function el(tag, attrs = {}, children = []) {
+        const node = document.createElement(tag);
+        for (const [k, v] of Object.entries(attrs)) {
+          if (k === "class") node.className = v;
+          else if (k === "style") node.setAttribute("style", v);
+          else node.setAttribute(k, v);
+        }
+        for (const child of children) {
+          if (typeof child === "string")
+            node.appendChild(document.createTextNode(child));
+          else node.appendChild(child);
+        }
+        return node;
+      }
+
+      // ---------- Render spacing ----------
+      function renderSpacing() {
+        const host = document.getElementById("spacingList");
+        if (!host) return;
+
+        host.innerHTML = "";
+        SPACING.forEach((s) => {
+          const row = el("div", { class: "space-row" }, [
+            el("div", { class: "space-label" }, [
+              el("div", { class: "mono space-key" }, [s.key]),
+              el("div", { class: "mono space-px" }, [s.px]),
+            ]),
+            el("div", { class: "space-track" }, [
+              el("div", { class: "space-bar", style: `width: var(${s.var});` }),
+            ]),
+            el("div", { class: "mono space-meta" }),
+          ]);
+
+          host.appendChild(row);
+        });
+      }
+
+      // ---------- Render radius ----------
+      function renderRadius() {
+        const host = document.getElementById("radiusGrid");
+        if (!host) return;
+
+        host.innerHTML = "";
+        RADIUS.forEach((r) => {
+          host.appendChild(
+            el("div", {}, [
+              el("div", {
+                class: r.cls,
+                style:
+                  "width: 96px; height: 96px; background: var(--primary-medium);",
+              }),
+              el("div", { class: "mono", style: "margin-top: 10px" }, [r.cls]),
+              el("div", { class: "label mono" }, [r.px]),
+            ]),
+          );
+        });
+      }
+
+      // ---------- Render shadows ----------
+      function renderShadows() {
+        const host = document.getElementById("shadowGrid");
+        if (!host) return;
+
+        host.innerHTML = "";
+        SHADOWS.forEach((s) => {
+          host.appendChild(
+            el("div", { class: `shadow-swatch ${s.cls}` }, [
+              el("div", { class: "mono" }, [s.cls]),
+              el("div", { class: "label" }, [s.label]),
+            ]),
+          );
+        });
+      }
+
+      // ----- TYPOGRAPHY DATA -----
+      const TYPOGRAPHY = [
+        { cls: "text-display-lg", label: "Display LG" },
+        { cls: "text-display-md", label: "Display MD" },
+        { cls: "text-display-sm", label: "Display SM" },
+
+        { cls: "text-headline-lg", label: "Headline LG" },
+        { cls: "text-headline-md", label: "Headline MD" },
+        { cls: "text-headline-sm", label: "Headline SM" },
+
+        { cls: "text-title-lg", label: "Title LG" },
+        { cls: "text-title-md", label: "Title MD" },
+        { cls: "text-title-sm", label: "Title SM" },
+
+        { cls: "text-body-lg", label: "Body LG" },
+        { cls: "text-body-md", label: "Body MD" },
+        { cls: "text-body-sm", label: "Body SM" },
+
+        { cls: "text-label-lg", label: "Label LG" },
+        { cls: "text-label-md", label: "Label MD" },
+        { cls: "text-label-sm", label: "Label SM" },
+
+        { cls: "text-display-md-accent", label: "Accent Display MD" },
+      ];
+
+      // ----- TYPOGRAPHY RENDER -----
+      function renderTypography() {
+        const host = document.getElementById("typographyMount");
+        if (!host) return;
+
+        host.innerHTML = "";
+
+        function fmtPx(v) {
+          // values usually come back like "16px" already; just guard empties
+          return v && v.trim().length ? v.trim() : "(missing)";
+        }
+
+        function fmtFamily(v) {
+          return v && v.trim().length ? v.trim() : "(missing)";
+        }
+
+        function row(k, v) {
+          return el(
+            "div",
+            { class: "mono", style: "display:flex; gap:10px; padding: 2px 0;" },
+            [
+              el("div", { style: "width: 140px; color: var(--color-muted);" }, [
+                k,
+              ]),
+              el("div", {}, [v]),
+            ],
+          );
+        }
+
+        TYPOGRAPHY.forEach((t) => {
+          // Create a sample line to measure computed styles
+          const sampleId = `typo-${t.cls}`;
+          const sample = el(
+            "div",
+            {
+              id: sampleId,
+              class: t.cls,
+              style:
+                "padding: 10px 0; border-bottom: 1px dashed var(--color-border); margin-bottom: 10px;",
+            },
+            ["The quick brown fox jumps over the lazy dog — 1234567890"],
+          );
+
+          // Card wrapper
+          const card = el(
+            "div",
+            { class: "card", style: "margin-bottom: 18px;" },
+            [
+              el(
+                "div",
+                {
+                  style:
+                    "display:flex; justify-content: space-between; gap: 12px; align-items: baseline;",
+                },
+                [
+                  el("div", { style: "font-weight: 700;" }, [t.label]),
+                  el("div", { class: "mono" }, [`.${t.cls}`]),
+                ],
+              ),
+              el("div", { class: "hr", style: "margin: 10px 0;" }),
+              sample,
+              el(
+                "div",
+                {
+                  style: "display:grid; grid-template-columns: 1fr; gap: 2px;",
+                },
+                [
+                  // Filled after we compute styles
+                ],
+              ),
+            ],
+          );
+
+          host.appendChild(card);
+
+          // Compute styles AFTER it’s in DOM
+          const computed = getComputedStyle(document.getElementById(sampleId));
+          const fontFamily = fmtFamily(computed.fontFamily);
+          const fontSize = fmtPx(computed.fontSize);
+          const lineHeight = fmtPx(computed.lineHeight);
+          const letterSpacing = fmtPx(computed.letterSpacing);
+          const fontWeight =
+            computed.fontWeight && computed.fontWeight.trim().length ?
+              computed.fontWeight.trim()
+            : "(missing)";
+
+          // Try to show your token vars as well (best-effort)
+          // Example: "text-display-lg" -> "display-lg"
+          const key = t.cls.replace(/^text-/, "");
+          const tokenFamily =
+            t.cls === "text-display-md-accent" ?
+              "--Font-Family-Accent"
+            : "--Font-Family-Primary";
+
+          const tokenFontSize = `--Font-Size-${key}`;
+          const tokenLineHeight = `--Line-Height-${key}`;
+          const tokenLetterSpacing = `--Letter-Spacing-${key}`;
+
+          const metaBlock = card.lastChild; // the empty grid we created
+          metaBlock.appendChild(row("font-family", fontFamily));
+          metaBlock.appendChild(row("font-size", fontSize));
+          metaBlock.appendChild(row("line-height", lineHeight));
+          metaBlock.appendChild(row("letter-spacing", letterSpacing));
+          metaBlock.appendChild(row("font-weight", fontWeight));
+
+          metaBlock.appendChild(
+            el("div", { class: "hr", style: "margin: 10px 0;" }),
+          );
+
+          // Token readout (also computed via CSS var lookup)
+          const cssVars = (name) =>
+            getComputedStyle(document.documentElement)
+              .getPropertyValue(name)
+              .trim() || "(missing)";
+
+          metaBlock.appendChild(
+            row("token family", `${tokenFamily} → ${cssVars(tokenFamily)}`),
+          );
+
+          // Only show size/line/spacing tokens if they exist for this key
+          metaBlock.appendChild(
+            row("token size", `${tokenFontSize} → ${cssVars(tokenFontSize)}`),
+          );
+          metaBlock.appendChild(
+            row(
+              "token line-height",
+              `${tokenLineHeight} → ${cssVars(tokenLineHeight)}`,
+            ),
+          );
+          metaBlock.appendChild(
+            row(
+              "token letter-spacing",
+              `${tokenLetterSpacing} → ${cssVars(tokenLetterSpacing)}`,
+            ),
+          );
+        });
+      }
+
+      // ---------- Render colors ----------
+      const COLOR_GROUPS = [
+        {
+          title: "Neutrals",
+          vars: [
+            "--neutral-white",
+            "--neutral-very-light",
+            "--neutral-light",
+            "--neutral-medium",
+            "--neutral-dark",
+            "--neutral-very-dark",
+            "--neutral-black",
+          ],
+        },
+        {
+          title: "Primary",
+          vars: [
+            "--primary-lightest",
+            "--primary-very-light",
+            "--primary-super-light",
+            "--primary-light",
+            "--primary-medium",
+            "--primary-dark",
+            "--primary-very-dark",
+            "--primary-darkest",
+          ],
+        },
+        {
+          title: "Green",
+          vars: [
+            "--green-lightest",
+            "--green-very-light",
+            "--green-light",
+            "--green-medium",
+            "--green-dark",
+            "--green-very-dark",
+            "--green-darkest",
+          ],
+        },
+        {
+          title: "Yellow",
+          vars: [
+            "--yellow-lightest",
+            "--yellow-very-light",
+            "--yellow-light",
+            "--yellow-medium",
+            "--yellow-dark",
+            "--yellow-very-dark",
+            "--yellow-darkest",
+          ],
+        },
+        {
+          title: "Red",
+          vars: [
+            "--red-lightest",
+            "--red-very-light",
+            "--red-light",
+            "--red-medium",
+            "--red-dark",
+            "--red-very-dark",
+            "--red-darkest",
+          ],
+        },
+        {
+          title: "Assorted",
+          vars: [
+            "--dark-blue",
+            "--off-white",
+            "--disabled-field",
+            "--light-gray",
+            "--gray-tag",
+          ],
+        },
+      ];
+
+      function getCssVar(varName) {
+        return getComputedStyle(document.documentElement)
+          .getPropertyValue(varName)
+          .trim();
+      }
+
+      function swatchCard(varName, value) {
+        // value might be empty if var isn't defined; show a friendly label
+        const shown = value || "(missing)";
+        return `
+         <div>
+           <div
+             style="
+               height: 180px;
+               border-radius: 10px 10px 0px 0px;
+               background: var(${varName});
+             "
+           ></div>
+           <div style="border: 1px solid var(--color-border); padding: 12px 8px;  border-radius:0px 0px 10px 10px;">
+           <div class="mono">${varName}</div>
+           <div class="label mono">${shown}</div>
+           </div>
+         </div>
+         `;
+      }
+
+      function renderColorSwatches() {
+        const mount = document.getElementById("colorSwatchMount");
+        if (!mount) return;
+
+        mount.innerHTML = COLOR_GROUPS.map((group) => {
+          const cards = group.vars
+            .map((v) => swatchCard(v, getCssVar(v)))
+            .join("");
+
+          return `
+           <div class="mono" style="font-weight: 700; margin-top: var(--space-5); margin-bottom: var(--space-5)">
+             ${group.title}
+           </div>
+           <div class="grid-demo">
+             ${cards}
+           </div>
+         `;
+        }).join("");
+      }
+
+      async function fetchLastUpdated() {
+        const owner = "anokhee";
+        const repo = "design_sandbox";
+        const branch = "main"; // or whatever you use
+
+        try {
+          const res = await fetch(
+            `https://api.github.com/repos/${owner}/${repo}/commits/${branch}`,
+          );
+          const data = await res.json();
+
+          const date = new Date(data.commit.committer.date);
+
+          const formatted = date.toLocaleDateString("en-US", {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          });
+
+          document.getElementById("lastUpdated").textContent = formatted;
+        } catch (err) {
+          document.getElementById("lastUpdated").textContent = "Unavailable";
+        }
+      }
+
+      fetchLastUpdated();
+
+      // Run once on load
+      renderColorSwatches();
+
+      // ---------- Boot ----------
+      renderSpacing();
+      renderRadius();
+      renderShadows();
+      renderTypography();
+    </script>
+  </body>
+</html>
